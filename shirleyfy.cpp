@@ -36,16 +36,6 @@ void slow_print(std::string str, int delaytime)
 
 }
 
-void load(int delaytime)
-{
-	for (int i = 0; i <= 100; ++i) {
-        std::cout << "\r\tProgress: " << i << "%" << std::flush;
-        waitTime(delaytime); // pause
-    }
-
-    std::cout << std::endl;
-}
-
 /*
 rules for name changes...
 
@@ -154,8 +144,6 @@ int main(int argc, char const *argv[])
     waitTime(1000);
 
     slow_printl("Let's begin the name game...", 100);
-    
-    load(30); // Progress x%
 
     slow_printl("Name is " + name, 100);
 
