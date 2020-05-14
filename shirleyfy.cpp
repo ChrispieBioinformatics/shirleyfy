@@ -12,11 +12,11 @@ void waitTime(int some)
 
 void slow_printl(std::string str, int delaytime)
 {
-	char p[str.size()];
-	str.copy(p, str.size());
-	
-	for (int i = 0; i < sizeof(p); i++) {
-        std::cout << p[i] << std::flush;
+	char char_array[str.size()];
+	str.copy(char_array, str.size());
+
+	for (int i = 0; i < sizeof(char_array); i++) {
+        std::cout << char_array[i] << std::flush;
         waitTime(delaytime);
     }
 
@@ -26,104 +26,101 @@ void slow_printl(std::string str, int delaytime)
 void slow_print(std::string str, int delaytime)
 {
 
-	char p[str.size()];
-	str.copy(p, str.size());
-	
-	for (int i = 0; i < sizeof(p); i++) {
-        std::cout << p[i] << std::flush;
+	char char_array[str.size()];
+	str.copy(char_array, str.size());
+
+	for (int i = 0; i < sizeof(char_array); i++) {
+        std::cout << char_array[i] << std::flush;
         waitTime(delaytime);
     }
 
 }
 
-/*
-rules for name changes...
-
-The name game. Shirley! Shirley, Shirley
-Bo-ber-ley, bo-na-na fanna
-Fo-fer-ley. fee fi mo-mer-ley, Shirley!
-Lincoln! Lincoln, Lincoln. bo-bin-coln
-Bo-na-na fanna, fo-fin-coln
-Fee fi mo-min-coln, Lincoln!
-Come on ev'rybody, I say now let's play a game
-I betcha I can make a rhyme out of anybody's name
-The first letter of the name
-I treat it like it wasn't there
-But a "B" or an "F" or an "M" will appear
-And then I say "Bo" add a "B" then I say the name
-Then "Bo-na-na fanna" and "fo"
-And then I say the name again with an ""f" very plain
-Then "fee fi" and a "mo"
-And then I say the name again with an "M" this time
-And there isn't any name that I can't rhyme
-Arnold! Arnold, Arnold bo-bar-nold
-Bo-na-na, fanna fo-far-nold
-Fee fi m-mar-mold. Arnold!
-But if the first two letters are ever the same
-Crop them both, then say the name
-Like Bob, Bob, drop the "B's", Bo-ob
-Or Fred, Fred, drop the "F's", Fo-red
-Or Mary, Mary, drop the "M's", Mo-ary
-That's the only rule that is contrary
-And then I say "Bo" add a "B" then I say the name
-Then "Bo-na-na fanna" and "fo"
-And then I say the name again with an ""f" very plain
-Then "fee fi" and a "mo"
-And then I say the name again with an "M" this time
-And there isn't any name that I can't rhyme
-Say Tony, Tony, bo-bo-ney
-Bo-na-na fanna, fo-fo-ney
-Fee fi mo-mo-ney, Tony!
-Let's do Billy!
-Billy, Billy, bo-gil-ly, bo-na-na 
-Fanna, fo-fil-ly, 
-Fee fi mo-mil-ly, Billy!
-Let's do Marsha!
-Marsha, Marsha, bo-bar-sha
-Bo-na-na fanna, fo-far-sha
-Fee fi mo-ar-sha, Marsha!
-Little trick with Nick!
-Nick, Nick, bo-bick, bo-na-na
-Fanna fo fick, fee fi mo-mick. Nick!
-The name game
-*/
-
-std::string checkName(std::string name)
+bool isVowel(char letter)
 {
+	if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u')
+		return true;
+	else
+		return false;
+}
 
-	char p[name.size()];
+std::string getHeadline(std::string name)
+{
+	// Prepare constant headline
+	std::string headline = "Let's do " + name + "!\n";
 
-	name.copy(p, name.size());
+	headline += name + ", " + name + ", \n";
 
-	std::string returnValue = "Let's do " + name + "!\n";
+	return headline;
+}
 
-	returnValue += name + ", " + name + ", ";
+std::string getBodyline(std::string shortname, std::string name)
+{
+	// Prepare the not constant body line, depending on the name
+	std::string bodyline = "Bo-b" + shortname + "\nBonana fanna fo-f" + shortname + "\nFee fi mo-m" + shortname + ", " + name; // finish/append the lyrics
 
-	if (p[0] == 'a' || p[0] == 'e' || p[0] == 'i' || p[0] == 'o' || p[0] == 'u')
-	{
-		returnValue += "Bo-b" + name + "\nBonana fanna fo-f" + name + "\nFee fi mo-m" + name + ", " + name;
-		return returnValue;
-	}
+	return bodyline;
+}
 
-	std::string shortname = "";
-
+int getShortnameOffset(char *char_array, int length)
+{
+	// Start with the second char because the first is already done.
 	int offset = 1;
-	for (int i = 1; i < sizeof(p); ++i)
+
+	// Check all other chars until a vowel is found.
+	for (int i = 1; i <= length; ++i)
 	{
-		if (p[i] != 'a' && p[i] != 'e' && p[i] != 'i' && p[i] != 'o' && p[i] != 'u')
-		{
-			continue;
-		}
+		if ( !isVowel( char_array[i] ) )
+			continue; // Check the next char
+
 		offset = i;
 		break;
 	}
 
-	for (int i = offset; i < sizeof(p); ++i)
+	return offset;
+}
+
+std::string getShortname(char *char_array, int offset, int length)
+{
+	std::string shortname = "";
+
+	// Use this shortened version of the name to build the lyrics string
+	for (int i = offset; i <= length; ++i)
 	{
-		shortname += p[i];
+		shortname += char_array[i];
 	}
 
-	returnValue += "Bo-b" + shortname + "\nBonana fanna fo-f" + shortname + "\nFee fi mo-m" + shortname + ", " + name;
+	// Everything past the first vowel
+	return  shortname;
+}
+
+std::string getLyrics(std::string name)
+{
+
+	// Create a char array with the size of letters contained in the name.
+	char char_array[name.size()];
+
+	// Convert name to a char array
+	name.copy(char_array, name.size());
+
+	// Get the constant headline
+	std::string returnValue = getHeadline(name);
+
+	// Check if the first char is a vowel
+	if ( isVowel(char_array[0]) )
+	{
+		returnValue += getBodyline(name, name); // Finish the lyrics
+		return returnValue;
+	}
+
+	// Find the first vowel (important to hand over the size of the char array)
+	int offset = getShortnameOffset(char_array, name.size());
+	
+	// Cut everything off to the first vowel
+	std::string shortname = getShortname(char_array, offset, (name.size()-offset) );
+
+	// Finish the Lyrics
+	returnValue += getBodyline(shortname, name);
 	
 	return returnValue;
 }
@@ -147,7 +144,7 @@ int main(int argc, char const *argv[])
 
     slow_printl("Name is " + name, 100);
 
-    std::string output = checkName(name);
+    std::string output = getLyrics(name);
 
     slow_printl(output, 100);
 
